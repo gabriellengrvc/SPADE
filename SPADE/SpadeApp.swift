@@ -1,6 +1,6 @@
 //
-//  Guess_WattApp.swift
-//  Guess Watt
+//  SpadeApp.swift
+//  SPADE
 //
 //  Created by Gabrielle on 11.01.2025.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct GuessWattApp: App {
+struct SpadeApp: App {
     @State private var hasSeenOnboarding: Bool = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     var body: some Scene {
         WindowGroup {

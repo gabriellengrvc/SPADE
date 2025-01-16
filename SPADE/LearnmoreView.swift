@@ -1,6 +1,6 @@
 //
 //  LearnmoreView.swift
-//  Guess Watt
+//  SPADE
 //
 //  Created by Gabrielle on 15.01.2025.
 //

@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F8D089BD2D32B78E004B0DEF"
-               BuildableName = "Guess Watt.app"
-               BlueprintName = "Guess Watt"
+               BuildableName = "SPADE.app"
+               BlueprintName = "SPADE"
                ReferencedContainer = "container:SPADE.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F8D089BD2D32B78E004B0DEF"
-            BuildableName = "Guess Watt.app"
-            BlueprintName = "Guess Watt"
+            BuildableName = "SPADE.app"
+            BlueprintName = "SPADE"
             ReferencedContainer = "container:SPADE.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -69,8 +69,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F8D089BD2D32B78E004B0DEF"
-            BuildableName = "Guess Watt.app"
-            BlueprintName = "Guess Watt"
+            BuildableName = "SPADE.app"
+            BlueprintName = "SPADE"
             ReferencedContainer = "container:SPADE.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -1,6 +1,6 @@
 //
 //  OnboardingView.swift
-//  Guess Watt
+//  SPADEs
 //
 //  Created by Gabrielle on 1.01.2025.
 //
