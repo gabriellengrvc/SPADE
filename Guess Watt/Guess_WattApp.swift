@@ -8,10 +8,16 @@
 import SwiftUI
 
 @main
-struct Guess_WattApp: App {
+struct GuessWattApp: App {
+    @State private var hasSeenOnboarding: Bool = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if hasSeenOnboarding {
+                ContentView()
+                    .environment(\.font, .system(.body, design: .rounded))
+            } else {
+                OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
+            }
         }
     }
 }

@@ -9,16 +9,28 @@
 /* Begin PBXBuildFile section */
 		F8D089C22D32B78E004B0DEF /* Guess_WattApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D089C12D32B78E004B0DEF /* Guess_WattApp.swift */; };
 		F8D089C42D32B78E004B0DEF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D089C32D32B78E004B0DEF /* ContentView.swift */; };
-		F8D089C62D32B790004B0DEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D089C52D32B790004B0DEF /* Assets.xcassets */; };
 		F8D089C92D32B790004B0DEF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D089C82D32B790004B0DEF /* Preview Assets.xcassets */; };
+		F8D089D02D32B7E1004B0DEF /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D089CF2D32B7E1004B0DEF /* OnboardingView.swift */; };
+		F8D089D22D32B809004B0DEF /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D089D12D32B809004B0DEF /* QuizView.swift */; };
+		F8D3466E2D33EA4000FD302B /* battery.gif in Resources */ = {isa = PBXBuildFile; fileRef = F8D3466D2D33EA4000FD302B /* battery.gif */; };
+		F8D346702D33EA4C00FD302B /* earth.gif in Resources */ = {isa = PBXBuildFile; fileRef = F8D3466F2D33EA4C00FD302B /* earth.gif */; };
+		F8D346722D33EA5200FD302B /* increase.gif in Resources */ = {isa = PBXBuildFile; fileRef = F8D346712D33EA5200FD302B /* increase.gif */; };
+		F8D346782D3724C000FD302B /* LearnmoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D346772D3724C000FD302B /* LearnmoreView.swift */; };
+		F8D346922D39A56000FD302B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D346912D39A56000FD302B /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F8D089BE2D32B78E004B0DEF /* Guess Watt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Guess Watt.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8D089C12D32B78E004B0DEF /* Guess_WattApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guess_WattApp.swift; sourceTree = "<group>"; };
 		F8D089C32D32B78E004B0DEF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		F8D089C52D32B790004B0DEF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F8D089C82D32B790004B0DEF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F8D089CF2D32B7E1004B0DEF /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		F8D089D12D32B809004B0DEF /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
+		F8D3466D2D33EA4000FD302B /* battery.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = battery.gif; sourceTree = "<group>"; };
+		F8D3466F2D33EA4C00FD302B /* earth.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = earth.gif; sourceTree = "<group>"; };
+		F8D346712D33EA5200FD302B /* increase.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = increase.gif; sourceTree = "<group>"; };
+		F8D346772D3724C000FD302B /* LearnmoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnmoreView.swift; sourceTree = "<group>"; };
+		F8D346912D39A56000FD302B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,9 +63,15 @@
 		F8D089C02D32B78E004B0DEF /* Guess Watt */ = {
 			isa = PBXGroup;
 			children = (
+				F8D346772D3724C000FD302B /* LearnmoreView.swift */,
+				F8D089D12D32B809004B0DEF /* QuizView.swift */,
+				F8D089CF2D32B7E1004B0DEF /* OnboardingView.swift */,
 				F8D089C12D32B78E004B0DEF /* Guess_WattApp.swift */,
 				F8D089C32D32B78E004B0DEF /* ContentView.swift */,
-				F8D089C52D32B790004B0DEF /* Assets.xcassets */,
+				F8D3466D2D33EA4000FD302B /* battery.gif */,
+				F8D3466F2D33EA4C00FD302B /* earth.gif */,
+				F8D346712D33EA5200FD302B /* increase.gif */,
+				F8D346912D39A56000FD302B /* Assets.xcassets */,
 				F8D089C72D32B790004B0DEF /* Preview Content */,
 			);
 			path = "Guess Watt";
@@ -102,7 +120,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F8D089B92D32B78E004B0DEF /* Build configuration list for PBXProject "Guess Watt" */;
+			buildConfigurationList = F8D089B92D32B78E004B0DEF /* Build configuration list for PBXProject "SPADE" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -126,7 +144,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8D089C92D32B790004B0DEF /* Preview Assets.xcassets in Resources */,
-				F8D089C62D32B790004B0DEF /* Assets.xcassets in Resources */,
+				F8D346702D33EA4C00FD302B /* earth.gif in Resources */,
+				F8D3466E2D33EA4000FD302B /* battery.gif in Resources */,
+				F8D346722D33EA5200FD302B /* increase.gif in Resources */,
+				F8D346922D39A56000FD302B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +158,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8D346782D3724C000FD302B /* LearnmoreView.swift in Sources */,
+				F8D089D02D32B7E1004B0DEF /* OnboardingView.swift in Sources */,
+				F8D089D22D32B809004B0DEF /* QuizView.swift in Sources */,
 				F8D089C42D32B78E004B0DEF /* ContentView.swift in Sources */,
 				F8D089C22D32B78E004B0DEF /* Guess_WattApp.swift in Sources */,
 			);
@@ -325,7 +349,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F8D089B92D32B78E004B0DEF /* Build configuration list for PBXProject "Guess Watt" */ = {
+		F8D089B92D32B78E004B0DEF /* Build configuration list for PBXProject "SPADE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8D089CA2D32B790004B0DEF /* Debug */,
