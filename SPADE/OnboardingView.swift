@@ -31,9 +31,13 @@ struct OnboardingView: View {
                         .foregroundColor(Color.white)
                         .frame(minWidth:0, maxWidth: .infinity)
                         .padding()
-                        .background(Color.green)
-                        .cornerRadius(50)
+                        .background(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
                         .padding(.horizontal, 16)
+                        .overlay(RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.black, lineWidth: 1))
+                        .cornerRadius(20)
+                        .background(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
+                        .cornerRadius(20)
                 }
                 .padding()
                 if showContentView {

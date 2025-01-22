@@ -16,13 +16,14 @@ struct LearnmoreView: View {
                 Image(systemName: "globe")
                     .imageScale(.large)
                     .foregroundStyle(.tint)
+                    .padding()
                 Text("Created by Gabrielle Gervacio, sources here")
                     .font(.custom("Avenir Next Rounded", size: 17))
             }
             .scrollContentBackground(.hidden)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background {
-                        Color(UIColor(red: 0xFC / 255.0, green: 0xFA / 255.0, blue: 0xE2 / 255.0, alpha: 1.0))
+                        Color(red: 1.0, green: 0.984, blue: 0.953)
                             .ignoresSafeArea()
                     }
         }

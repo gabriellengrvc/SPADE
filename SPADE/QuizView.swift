@@ -12,17 +12,22 @@ struct Question: Identifiable {
     let id = UUID()
     let questionText: String
     let options: [String]
-    let correctAnswer: String
+    let correctAnswer: CorrectAnswer
     let explanation: String
     let type: QuestionType
 }
 
+enum CorrectAnswer {
+    case single(String)
+    case multiple([String])
+}
+
 enum QuestionType {
     case multipleChoice
+    case multipleChoice2
     case stepper
     case slider
     case stepper2
-    case stepper3
     case stepper4
 }
 
@@ -32,6 +37,7 @@ struct MultipleChoiceView: View {
     @Binding var isAnswered: Bool
     @State private var selectedAnswer: String?
     @State private var answerSelected = false
+    @State private var isExpanded: Bool = false
     
     var body: some View {
         VStack{
@@ -39,8 +45,15 @@ struct MultipleChoiceView: View {
                 Button(action: {
                     selectedAnswer = option
                     answerSelected = true
-                    if option == question.correctAnswer {
-                        score += 5
+                    switch question.correctAnswer {
+                        case .single(let correct):
+                            if option == correct {
+                                score += 5
+                            }
+                        case .multiple(let correctAnswers):
+                            if correctAnswers.contains(option) {
+                                score += 5
+                            }
                         }
                         isAnswered = true
                     }) {
@@ -49,13 +62,73 @@ struct MultipleChoiceView: View {
                             .font(.system(.title, design: .rounded))
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(selectedAnswer == option ? (option == question.correctAnswer ? Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0)) : Color(UIColor(red: 186 / 255.0, green: 67 / 255.0, blue: 83 / 255.0, alpha: 1.0))) : Color.clear)
+                            .background(selectedAnswer == option ? {
+                                switch question.correctAnswer {
+                                    case .single(let correct):
+                                        return option == correct ? Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0)) : Color(UIColor(red: 186 / 255.0, green: 67 / 255.0, blue: 83 / 255.0, alpha: 1.0))
+                                    case .multiple(let correctAnswers):
+                                        return correctAnswers.contains(option) ? Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0)) : Color(UIColor(red: 186 / 255.0, green: 67 / 255.0, blue: 0x83 / 255.0, alpha: 1.0))
+                                        }
+                            }() : Color.clear)
                             .foregroundColor(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
                             .overlay(RoundedRectangle(cornerRadius: 20)
                                 .stroke(Color.black, lineWidth: 1))
                             .cornerRadius(20)
                             .padding(.vertical, 2)
-                            .padding(.horizontal, 20)
+                            .padding(.horizontal, 30)
+
+                    }
+                    .disabled(isAnswered)
+                }
+            }
+        }
+    }
+
+struct MultipleChoiceView2: View {
+    let question: Question
+    @Binding var score: Int
+    @Binding var isAnswered: Bool
+    @State private var selectedAnswer: String?
+    @State private var answerSelected = false
+    @State private var isExpanded: Bool = false
+    
+    var body: some View {
+        VStack{
+            ForEach(question.options, id: \.self) { option in
+                Button(action: {
+                    selectedAnswer = option
+                    answerSelected = true
+                    switch question.correctAnswer {
+                        case .single(let correct):
+                            if option == correct {
+                                score += 5
+                            }
+                        case .multiple(let correctAnswers):
+                            if correctAnswers.contains(option) {
+                                score += 5
+                            }
+                        }
+                        isAnswered = true
+                    }) {
+                        Text(option)
+                            .font(.title3)
+                            .font(.system(.title, design: .rounded))
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(selectedAnswer == option ? {
+                                switch question.correctAnswer {
+                                    case .single(let correct):
+                                        return option == correct ? Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0)) : Color(UIColor(red: 186 / 255.0, green: 67 / 255.0, blue: 83 / 255.0, alpha: 1.0))
+                                    case .multiple(let correctAnswers):
+                                        return correctAnswers.contains(option) ? Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0)) : Color(UIColor(red: 186 / 255.0, green: 67 / 255.0, blue: 0x83 / 255.0, alpha: 1.0))
+                                        }
+                            }() : Color.clear)
+                            .foregroundColor(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
+                            .overlay(RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.black, lineWidth: 1))
+                            .cornerRadius(20)
+                            .padding(.vertical, 2)
+                            .padding(.horizontal, 30)
 
                     }
                     .disabled(isAnswered)
@@ -65,7 +138,7 @@ struct MultipleChoiceView: View {
     }
 
 struct StepperView: View {
-   @State private var stepperValue:Int = 0
+    @State private var stepperValue:Int = 0
     let correctAnswer: Int
     let explanation: String
     @Binding var isAnswered: Bool
@@ -73,20 +146,54 @@ struct StepperView: View {
     
     let correctColor = Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0))
     let incorrectColor = Color(UIColor(red: 0xBA / 255.0, green: 0x43 / 255.0, blue: 0x53 / 255.0, alpha: 1.0))
+    let maxSpeedLevel: Int = 10
     
     var body: some View {
         VStack{
-            Text("Give your best guess:")
-                .font(.title2)
-                .font(.system(.title, design: .rounded))
-                .padding()
-            Stepper("\(stepperValue) kW", value: $stepperValue, in: 0...16000, step:10)
+            Text("\(stepperValue) kW")
+                .font(.title)
+                .padding(.top, 10)
+            HStack {
+                Button(action: {
+                    if stepperValue > 0 {
+                        stepperValue -= 10
+                               }
+                    }) {
+                Image(systemName: "minus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color(UIColor(red: 0xAD / 255.0, green: 0x9F / 255.0, blue: 0x22 / 255.0, alpha: 1.0)))
+                        }
+
+                Button(action: {
+                    if stepperValue < 500 {
+                        stepperValue += 10
+                               }
+                    }) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color(UIColor(red: 0xAD / 255.0, green: 0x9F / 255.0, blue: 0x22 / 255.0, alpha: 1.0)))
+                        }
+                    }
+                    .padding()
+            let speedLevelIndex = min(stepperValue / 10, maxSpeedLevel - 1)
+            Image("speedo \(speedLevelIndex + 1)")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 256, height: 144)
                 .padding()
             
             if isAnswered {
                 Text(stepperValue == correctAnswer ? "Correct!" : "Incorrect.")
                         .foregroundColor(stepperValue == correctAnswer ? correctColor : incorrectColor)
+                        .padding(.bottom, -100)
+                Button(action: {
+                    if let url = URL(string: "https://example.com/article") {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
+                        }
                         .padding()
+                
                 } else {
                     Button("Submit") {
                         isAnswered = true
@@ -97,6 +204,7 @@ struct StepperView: View {
                     .padding()
             }
         }
+        .padding()
     }
 }
 
@@ -117,42 +225,6 @@ struct StepperView2: View {
                 .padding()
                 .font(.system(.title, design: .rounded))
             Stepper("\(stepperValue) GPUs", value: $stepperValue, in: 0...16000, step:10)
-                .padding()
-            
-            if isAnswered {
-                Text(stepperValue == correctAnswer ? "Correct!" : "Incorrect.")
-                        .foregroundColor(stepperValue == correctAnswer ? correctColor : incorrectColor)
-                        .padding()
-                } else {
-                    Button("Submit") {
-                        isAnswered = true
-                        if stepperValue == correctAnswer {
-                            score += 5
-                        }
-                    }
-                    .padding()
-            }
-        }
-    }
-}
-
-struct StepperView3: View {
-   @State private var stepperValue:Int = 0
-    let correctAnswer: Int
-    let explanation: String
-    @Binding var isAnswered: Bool
-    @Binding var score: Int
-    
-    let correctColor = Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0))
-    let incorrectColor = Color(UIColor(red: 0xBA / 255.0, green: 0x43 / 255.0, blue: 0x53 / 255.0, alpha: 1.0))
-    
-    var body: some View {
-        VStack{
-            Text("Give your best guess:")
-                .font(.title2)
-                .padding()
-                .font(.system(.title, design: .rounded))
-            Stepper("\(stepperValue) GwH", value: $stepperValue, in: 0...16000, step:10)
                 .padding()
             
             if isAnswered {
@@ -194,7 +266,7 @@ struct StepperView4: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 320, height: 180)
-                            .padding()
+                .padding()
             Stepper("\(stepperValue) mL", value: $stepperValue, in: 0...500, step:50)
                 .padding()
                 .font(.system(.title, design: .rounded))
@@ -299,7 +371,6 @@ struct SliderView: View {
     }
 }
     
-    
 struct QuizView: View {
     @State private var currentQuestionIndex = 0
     @State private var score = 0
@@ -311,141 +382,181 @@ struct QuizView: View {
         Question(
             questionText: "Let’s start easy! How do we measure energy?",
             options: ["Watt", "Kelvin", "Volt", "Ampere"],
-            correctAnswer: "Watt",
-            explanation: "Watt is a unit of power that measures how fast energy is consumed, watts are used for individual devices, kilowatts power multiple big appliances like a data center, megawatts power hundreds of homes, gigawatts power entire cities at a national or industrial scale",
+            correctAnswer: .single("Watt"),
+            explanation: "Watt is a unit of power that measures how fast energy is consumed!",
             type: .multipleChoice),
         Question(
-            questionText: "Compared to traditional servers, AI is much more energy intensive. How many kW of energy can AI servers consume?",
+            questionText: "Artificial intelligence is rapidly changing the world, but is incredibly energy intensive with its high computational demands. How many kW of energy do AI servers consume per hour?",
             options: [],
-            correctAnswer: "100",
-            explanation: "AI servers consume up to 100 kW per rack, more than 10 times the energy of traditional racks (7 kW). Data centers housing these servers are expected to double their electricity consumption by 2030.",
+            correctAnswer: .single("100"),
+            explanation: "AI servers consume up to 100 kW per rack, more than 10 times the energy of traditional racks (7 kW). With the growing demand, electricity demand growth will double by 2026! according to the International Energy Agency.",
             type: .stepper),
         Question(
-            questionText: "Training large language models is energy intensive. How many times more energy did it take to train GPT-3 compared to driving an electric car all around the Earth?",
+            questionText: "Advanced AI models like ChatGPT require vast amounts of computing power during the training. How many times more energy did it take to train GPT-3 compared to driving an electric car around the Earth?",
             options: [],
-            correctAnswer: "1500",
-            explanation: "Training GPT-3 used up 1,287 MWh, the equivalent to driving an electric car around the Earth 1,500 times.",
+            correctAnswer: .single("1500"),
+            explanation: "Training GPT-3 used up 1,287 MWh, the equivalent to driving an electric car around the Earth 1,500 times! This intense computation relies on electricity from power grids powered by fossil fuels. As AI adoption grows, its carbon footprint expands.",
             type: .slider),
         Question(
-            questionText: "We also use computational resources to determine the energy AI consumes. What is a GPU?",
+            questionText: "We use computational resources to determine the energy AI consumes. What is a GPU?",
             options: ["a processing unit that does complex computations", "a processing unit that handles basic tasks", "a short-term memory that holds data"],
-            correctAnswer: "a processing unit that does complex computations",
-            explanation: "A GPU is a graphic processing units that requires a lot of energy to run. Large AI models require more memory as they process larger data sets. A large AI model can involve thousands of GPUs running continuously!" ,
+            correctAnswer: .single("a processing unit that does complex computations"),
+            explanation: "A GPU, short for graphic processing unit, performs multiple calculations at the same time. It excels at handling data-intensive and computationally demanding tasks. Large AI models can involve thousands of GPUs running continuously." ,
             type: .multipleChoice),
         Question(
-            questionText: "GPT-4 is currently the most advanced OpenAI system and can solve difficult problems with greater accuracy. How many GPUs do you think were used to build GPT-4?",
+            questionText: "GPT-4 is currently the most advanced OpenAI system performing with over 78% accuracy. How many GPUs do you think were used to build GPT-4?",
             options: [],
-            correctAnswer: "16000",
-            explanation: "It took 16000 GPUs amounting to 1 billion dollars to build GPT-4, the large language model created by OpenAI. Training GPT-4 tooks GPUs running for months.",
+            correctAnswer: .single("16000"),
+            explanation: "It took 16000 GPUs amounting to 1 billion dollars to build GPT-4. Training GPT-4 tooks GPUs running for months and consumed 50 GWh, the equivalent to the annual electricity usage of 3600 homes.",
             type: .stepper2),
         Question(
-            questionText: "How many GwH of energy do you think it took to train GPT-4?",
+            questionText: "AI servers can get hot and require cooling systems to regulate temperature. 43% of the energy data centers use goes to cooling and power provision systems. How many mL of water do you think 1 ChatGPT conversation uses? ",
             options: [],
-            correctAnswer: "50",
-            explanation: "It took 50 GWh, the equivalent to the annual electricity usage of 3600 homes.",
-            type: .stepper3),
-        Question(
-            questionText: "Did you know that AI consumes water? How many mL of water do you think 1 ChatGPT conversation uses? ",
-            options: [],
-            correctAnswer: "500",
-            explanation: "ChatGPT gulps up around 500 mL of water every time you ask it between 5-50 questions. Google's hyperscale data centers, that power Gmail and Google Drive, used up an average of 2.1 million liters of water per day over the past year.",
+            correctAnswer: .single("500"),
+            explanation: "ChatGPT gulps up around 500 mL of water every time you ask it between 5-50 questions. Data centers at Google used up an average of 2.1 million liters of water per day over the past year. (add graph)",
             type: .stepper4),
         Question(
-            questionText: "Why does AI use so much water?",
-            options: ["Cooling", "Electricity generation", "AI supply chains", "All of the above"],
-            correctAnswer: "All of the above",
-            explanation: "AI’s water usage is due to all of the above! Its significant energy consumption generates a lot of heat which requires cooling. Most common cooling methods depend on substantial quantities of clean, fresh water, a limited resource on our planet." ,
-            type: .multipleChoice),
+            questionText: "Big companies have made pledges to sustainability in AI. Google aims to solely rely on carbon-free energy by 2030. Microsoft plans to be carbon-negative by 2030 and then remove historical emissions by 2050. How can we make AI systems greener?",
+            options: ["renewable energy", "carbon capture", "better climate policies", "circular economy" ],
+            correctAnswer: .multiple(["renewable energy", "carbon capture", "better climate policies", "circular economy" ]),
+            explanation: "all of the above!",
+            type: .multipleChoice2),
         Question(
-            questionText: "Researchers say that AI has the potential to help fight climate change. How can we find a balance and reduce its environmental impact?",
+            questionText: "AI has the potential to help fight climate change. ",
             options: ["Develop smarter technology", "Better climate policies", "Recycling and reusing electronic hardware", "All of the above"],
-            correctAnswer: "All of the above",
+            correctAnswer: .single("All of the above"),
             explanation: "We can improve AI efficiency to reduce waste and its energy needs with these potential solutions and more! Like small language models, specialized AI Accelerator Chips, and low-power algorithms." ,
             type: .multipleChoice),
     ]
     
     var body: some View {
-        VStack {
-            if currentQuestionIndex < questions.count {
-                let question = questions[currentQuestionIndex]
-                Text(question.questionText)
-                    .font(.system(.title2, design: .rounded))
-                    .fontWeight(.bold)
-                    .padding(20)
-                    .opacity(revealQuestion ? 1 : 0)
-                    .scaleEffect(revealQuestion ? 1 : 0.8)
-                    .animation(.easeInOut(duration: 2), value: revealQuestion)
-                    .transition(.slide)
-                    .onAppear{
-                        revealQuestion = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            revealOptions = true
-                        }
+        ZStack {
+            Color(red: 1.0, green: 0.984, blue: 0.953)
+                .ignoresSafeArea()
+        ScrollView {
+            VStack(spacing: 0) {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Image("spadeicon")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                        Text("\(score)")
+                            .font(.system(size: 18, weight: .bold))
+                            .padding(10)
+                            .padding(.leading, -5)
+                            .padding(.trailing, 7)
                     }
-                
-                switch question.type {
-                case .multipleChoice:
-                    MultipleChoiceView(question: question, score: $score, isAnswered: $isAnswered)
-                    .opacity(revealOptions ? 1 : 0)
-                    .animation(.easeInOut(duration: 2), value: revealOptions)
-                case .stepper:
-                    StepperView(correctAnswer: Int(question.correctAnswer) ?? 0, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
-                        .opacity(revealOptions ? 1 : 0)
-                        .animation(.easeInOut(duration: 2), value: revealOptions)
+                    .padding([.top, .trailing])
                     
-                case .slider:
-                    SliderView(correctAnswer: Float(question.correctAnswer) ?? 0, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
-                        .opacity(revealOptions ? 1 : 0)
-                        .animation(.easeInOut(duration: 2), value: revealOptions)
-                    
-                case .stepper2:
-                    StepperView2(correctAnswer: Int(question.correctAnswer) ?? 0, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
-                        .opacity(revealOptions ? 1 : 0)
-                        .animation(.easeInOut(duration: 2), value: revealOptions)
-                    
-                case .stepper3:
-                    StepperView3(correctAnswer: Int(question.correctAnswer) ?? 0, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
-                        .opacity(revealOptions ? 1 : 0)
-                        .animation(.easeInOut(duration: 2), value: revealOptions)
-                    
-                case .stepper4:
-                    StepperView4(correctAnswer: Int(question.correctAnswer) ?? 0, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
-                        .opacity(revealOptions ? 1 : 0)
-                        .animation(.easeInOut(duration: 2), value: revealOptions)
-                }
-                
-                if isAnswered {
-                    Text("Explanation: \(questions[currentQuestionIndex].explanation)")
-                        .padding(25)
-                        .font(.custom("Avenir Next Rounded", size: 17))
-                    
-                    Button("Next Question") {
-                        withAnimation(.easeInOut(duration:1)) {
-                            currentQuestionIndex += 1
-                            isAnswered = false
-                            revealQuestion = false
-                            revealOptions = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {withAnimation(.easeInOut(duration: 2)) {
+                    if currentQuestionIndex < questions.count {
+                        let question = questions[currentQuestionIndex]
+                        Text(question.questionText)
+                            .font(.system(.title2, design: .rounded))
+                            .fontWeight(.bold)
+                            .padding(25)
+                            .opacity(revealQuestion ? 1 : 0)
+                            .scaleEffect(revealQuestion ? 1 : 0.8)
+                            .animation(.easeInOut(duration: 2), value: revealQuestion)
+                            .transition(.slide)
+                            .onAppear{
                                 revealQuestion = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    revealOptions = true
                                 }
-                                withAnimation(.easeInOut(duration: 2)){
-                                revealOptions = true
                             }
+                        
+                        switch question.type {
+                        case .multipleChoice:
+                            MultipleChoiceView(question: question, score: $score, isAnswered: $isAnswered)
+                                .opacity(revealOptions ? 1 : 0)
+                                .animation(.easeInOut(duration: 2), value: revealOptions)
+                            
+                        case .multipleChoice2:
+                            MultipleChoiceView(question: question, score: $score, isAnswered: $isAnswered)
+                                .opacity(revealOptions ? 1 : 0)
+                                .animation(.easeInOut(duration: 2), value: revealOptions)
+                            
+                        case .stepper:
+                            StepperView(correctAnswer: 100, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
+                                .opacity(revealOptions ? 1 : 0)
+                                .animation(.easeInOut(duration: 2), value: revealOptions)
+                            
+                        case .slider:
+                            SliderView(correctAnswer: 1500, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
+                                .opacity(revealOptions ? 1 : 0)
+                                .animation(.easeInOut(duration: 2), value: revealOptions)
+                            
+                        case .stepper2:
+                            StepperView2(correctAnswer: 16000, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
+                                .opacity(revealOptions ? 1 : 0)
+                                .animation(.easeInOut(duration: 2), value: revealOptions)
+                            
+                        case .stepper4:
+                            StepperView4(correctAnswer: 500, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
+                                .opacity(revealOptions ? 1 : 0)
+                                .animation(.easeInOut(duration: 2), value: revealOptions)
                         }
+                        
+                        if isAnswered {
+                            switch currentQuestionIndex {
+                            case 0:
+                                Text("Explanation: \(questions[currentQuestionIndex].explanation)")
+                                    .padding(25)
+                                    .padding(.top, -15)
+                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                Image("table")
+                                    .resizable()
+                                    .frame(width: 420, height:240)
+                                    .padding(.bottom, 20)
+                            case 1:
+                                Text("Explanation: \(questions[currentQuestionIndex].explanation)")
+                                    .padding(25)
+                                    .padding(.top, -15)
+                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                Image("table")
+                                    .resizable()
+                                    .frame(width: 420, height:240)
+                                    .padding(.bottom, 20)
+                            default:
+                                Text("Explanation: \(questions[currentQuestionIndex].explanation)")
+                                    .padding(25)
+                                    .font(.custom("Avenir Next Rounded", size: 17))
+                            }
+                            
+                            Button("Next Question") {
+                                withAnimation(.easeInOut(duration:1)) {
+                                    currentQuestionIndex += 1
+                                    isAnswered = false
+                                    revealQuestion = false
+                                    revealOptions = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {withAnimation(.easeInOut(duration: 2)) {
+                                        revealQuestion = true
+                                    }
+                                        withAnimation(.easeInOut(duration: 2)){
+                                            revealOptions = true
+                                        }
+                                    }
+                                }
+                            }
+                            .font(.system(size: 17, weight: .bold))
+                            .buttonStyle(.borderedProminent)
+                            .cornerRadius(15)
+                            .foregroundColor(Color(UIColor(red: 0xFC / 255.0, green: 0xFA / 255.0, blue: 0xE2 / 255.0, alpha: 1.0)))
+                            .tint(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
+                        }
+                    } else {
+                        EndingScreen(score: score,totalQuestions: questions.count)
                     }
                 }
+                .padding([.leading, .trailing], 0)
             }
-        } else {
-            EndingScreen(score: score,totalQuestions: questions.count)
+            .environment(\.font, .system(.body, design: .rounded))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
     }
-    .environment(\.font, .system(.body, design: .rounded))
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background {
-        Color(red: 1.0, green: 0.984, blue: 0.953)
-            .ignoresSafeArea()
-    }
-    .scrollContentBackground(.hidden)
 }
     
     struct EndingScreen: View {
@@ -482,7 +593,6 @@ struct QuizView: View {
             .padding()
         }
     }
-}
                  
 
 #Preview {
