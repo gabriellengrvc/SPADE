@@ -40,12 +40,6 @@ struct ContentView: View {
                         .padding(.top, -10)
                 }
                 .padding()
-                //.scrollContentBackground(.hidden)
-                //.frame(maxWidth: .infinity, maxHeight: .infinity)
-                // .background {
-                //    Color(UIColor(red: 0xAD / 255.0, green: 0x9F / 255.0, blue: 0x22 / 255.0, alpha: 1.0))
-                //             .ignoresSafeArea()
-                
             }
             .navigationBarHidden(true)
         }
