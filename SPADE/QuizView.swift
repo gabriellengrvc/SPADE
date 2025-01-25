@@ -151,8 +151,10 @@ struct StepperView: View {
     var body: some View {
         VStack{
             Text("\(stepperValue) kW")
-                .font(.title)
+                .font(.largeTitle)
+                .bold()
                 .padding(.top, 10)
+                .foregroundColor(correctColor)
             HStack {
                 Button(action: {
                     if stepperValue > 0 {
@@ -224,9 +226,34 @@ struct StepperView2: View {
                 .font(.title2)
                 .padding()
                 .font(.system(.title, design: .rounded))
-            Stepper("\(stepperValue) GPUs", value: $stepperValue, in: 0...16000, step:10)
-                .padding()
-            
+            Text("\(stepperValue)")
+                .font(.largeTitle)
+                .bold()
+                .padding(.bottom, 5)
+                .foregroundColor(correctColor)
+            HStack {
+                Button(action: {
+                    if stepperValue > 0 {
+                        stepperValue -= 1000
+                               }
+                    }) {
+                Image(systemName: "minus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color(UIColor(red: 0xAD / 255.0, green: 0x9F / 255.0, blue: 0x22 / 255.0, alpha: 1.0)))
+                        }
+
+                Button(action: {
+                    if stepperValue < 16000 {
+                        stepperValue += 1000
+                               }
+                    }) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color(UIColor(red: 0xAD / 255.0, green: 0x9F / 255.0, blue: 0x22 / 255.0, alpha: 1.0)))
+                        }
+                    }
+                    .padding()
+
             if isAnswered {
                 Text(stepperValue == correctAnswer ? "Correct!" : "Incorrect.")
                         .foregroundColor(stepperValue == correctAnswer ? correctColor : incorrectColor)
@@ -267,9 +294,35 @@ struct StepperView4: View {
                 .scaledToFit()
                 .frame(width: 320, height: 180)
                 .padding()
-            Stepper("\(stepperValue) mL", value: $stepperValue, in: 0...500, step:50)
+            Text("\(stepperValue) mL")
                 .padding()
-                .font(.system(.title, design: .rounded))
+                .font(.largeTitle)
+                .bold()
+                .foregroundColor(correctColor)
+            
+            HStack {
+                Button(action: {
+                    if stepperValue > 0 {
+                        stepperValue -= 50
+                               }
+                    }) {
+                Image(systemName: "minus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color(UIColor(red: 0xAD / 255.0, green: 0x9F / 255.0, blue: 0x22 / 255.0, alpha: 1.0)))
+                        }
+
+                Button(action: {
+                    if stepperValue < 1000 {
+                        stepperValue += 50
+                               }
+                    }) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(Color(UIColor(red: 0xAD / 255.0, green: 0x9F / 255.0, blue: 0x22 / 255.0, alpha: 1.0)))
+                        }
+                    }
+                    .padding()
+            
             if isAnswered {
                 Text(stepperValue == correctAnswer ? "Correct!" : "Incorrect.")
                         .foregroundColor(stepperValue == correctAnswer ? correctColor : incorrectColor)
@@ -312,10 +365,10 @@ struct SliderView: View {
             Image("earth car \(earthCarIndex + 1)")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 240, height: 135)
+                .frame(width: 300, height: 135)
                 .padding()
             Text("\(Int(sliderValue)) times")
-                .font(.title)
+                .font(.largeTitle)
                 .foregroundColor(correctColor)
                 .font(.system(.title, design: .rounded))
             Slider(
@@ -354,8 +407,6 @@ struct SliderView: View {
                     isAnswered = true
                     if abs(sliderValue - Double(correctAnswer)) < 10 {
                         score += 5
-                        feedback = "Great guess!"
-                        color = correctColor
                     }
                 }
                 .padding()
@@ -386,34 +437,34 @@ struct QuizView: View {
             explanation: "Watt is a unit of power that measures how fast energy is consumed!",
             type: .multipleChoice),
         Question(
-            questionText: "Artificial intelligence is rapidly changing the world, but is incredibly energy intensive with its high computational demands. How many kW of energy do AI servers consume per hour?",
+            questionText: "Artificial intelligence (AI) is rapidly changing the world. How many kW of energy do AI servers consume per hour?",
             options: [],
             correctAnswer: .single("100"),
-            explanation: "AI servers consume up to 100 kW per rack, more than 10 times the energy of traditional racks (7 kW). With the growing demand, electricity demand growth will double by 2026! according to the International Energy Agency.",
+            explanation: "AI servers are computers hosted in data centers for storing, processing and distributing data. They consume up to 100 kW per rack, more than 10 times the energy of traditional racks (7 kW)!",
             type: .stepper),
         Question(
-            questionText: "Advanced AI models like ChatGPT require vast amounts of computing power during the training. How many times more energy did it take to train GPT-3 compared to driving an electric car around the Earth?",
+            questionText: "How many times more energy did it take to train GPT-3 compared to driving an electric car around the Earth?",
             options: [],
             correctAnswer: .single("1500"),
-            explanation: "Training GPT-3 used up 1,287 MWh, the equivalent to driving an electric car around the Earth 1,500 times! This intense computation relies on electricity from power grids powered by fossil fuels. As AI adoption grows, its carbon footprint expands.",
+            explanation: "Advanced AI models like ChatGPT require vast amounts of computing power during the training. Training GPT-3 used up 1,287 MWh, the equivalent to driving an electric car around the Earth 1,500 times!",
             type: .slider),
         Question(
-            questionText: "We use computational resources to determine the energy AI consumes. What is a GPU?",
-            options: ["a processing unit that does complex computations", "a processing unit that handles basic tasks", "a short-term memory that holds data"],
-            correctAnswer: .single("a processing unit that does complex computations"),
+            questionText: "Behind AI is an important piece of hardware, a GPU, which is a...",
+            options: ["specialized electronic circuit that does complex computations", "processing unit that acts as a control center", "short-term memory that holds data"],
+            correctAnswer: .single("specialized electronic circuit that does complex computations"),
             explanation: "A GPU, short for graphic processing unit, performs multiple calculations at the same time. It excels at handling data-intensive and computationally demanding tasks. Large AI models can involve thousands of GPUs running continuously." ,
             type: .multipleChoice),
         Question(
-            questionText: "GPT-4 is currently the most advanced OpenAI system performing with over 78% accuracy. How many GPUs do you think were used to build GPT-4?",
+            questionText: "How many GPUs do you think were used to build GPT-4, currently the most advanced and accurate OpenAI system?",
             options: [],
             correctAnswer: .single("16000"),
             explanation: "It took 16000 GPUs amounting to 1 billion dollars to build GPT-4. Training GPT-4 tooks GPUs running for months and consumed 50 GWh, the equivalent to the annual electricity usage of 3600 homes.",
             type: .stepper2),
         Question(
-            questionText: "AI servers can get hot and require cooling systems to regulate temperature. 43% of the energy data centers use goes to cooling and power provision systems. How many mL of water do you think 1 ChatGPT conversation uses? ",
+            questionText: "AI servers can get hot and require cooling systems to regulate temperature. How many mL of water do you think 1 ChatGPT conversation uses? ",
             options: [],
             correctAnswer: .single("500"),
-            explanation: "ChatGPT gulps up around 500 mL of water every time you ask it between 5-50 questions. Data centers at Google used up an average of 2.1 million liters of water per day over the past year. (add graph)",
+            explanation: "ChatGPT gulps up around 500 mL of water every time you ask it between 5-50 questions! AI consumes fresh water by onsite server cooling and offsite electricity generation.",
             type: .stepper4),
         Question(
             questionText: "Big companies have made pledges to sustainability in AI. Google aims to solely rely on carbon-free energy by 2030. Microsoft plans to be carbon-negative by 2030 and then remove historical emissions by 2050. How can we make AI systems greener?",
@@ -421,12 +472,6 @@ struct QuizView: View {
             correctAnswer: .multiple(["renewable energy", "carbon capture", "better climate policies", "circular economy" ]),
             explanation: "all of the above!",
             type: .multipleChoice2),
-        Question(
-            questionText: "AI has the potential to help fight climate change. ",
-            options: ["Develop smarter technology", "Better climate policies", "Recycling and reusing electronic hardware", "All of the above"],
-            correctAnswer: .single("All of the above"),
-            explanation: "We can improve AI efficiency to reduce waste and its energy needs with these potential solutions and more! Like small language models, specialized AI Accelerator Chips, and low-power algorithms." ,
-            type: .multipleChoice),
     ]
     
     var body: some View {
@@ -446,7 +491,7 @@ struct QuizView: View {
                             .font(.system(size: 18, weight: .bold))
                             .padding(10)
                             .padding(.leading, -5)
-                            .padding(.trailing, 7)
+                            .padding(.trailing, 10)
                     }
                     .padding([.top, .trailing])
                     
@@ -515,10 +560,64 @@ struct QuizView: View {
                                     .padding(25)
                                     .padding(.top, -15)
                                     .font(.custom("Avenir Next Rounded", size: 17))
-                                Image("table")
-                                    .resizable()
-                                    .frame(width: 420, height:240)
-                                    .padding(.bottom, 20)
+                                ZStack {
+                                    Image("datagraph")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 300)
+                                        .padding(.bottom, 20)
+                                                
+                                    Link(destination: URL(string: "https://www2.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions/2025/genai-power-consumption-creates-need-for-more-sustainable-data-centers.html")!) {
+                                        Text("?")
+                                            .font(.title)
+                                            .foregroundColor(.white)
+                                            .frame(width: 40, height: 40)
+                                            .background(Circle().fill(Color.blue))
+                                            .offset(x: 130, y: -120)
+                                            }
+                                    }
+                            case 4:
+                                Text("Explanation: \(questions[currentQuestionIndex].explanation)")
+                                    .padding(25)
+                                    .padding(.top, -15)
+                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                ZStack {
+                                    Image("gpus")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 300)
+                                        .padding(.bottom, 20)
+                                                
+                                    Link(destination: URL(string: "https://cloud.google.com/discover/gpu-for-ai")!) {
+                                        Text("?")
+                                            .font(.title)
+                                            .foregroundColor(.white)
+                                            .frame(width: 40, height: 40)
+                                            .background(Circle().fill(Color.blue))
+                                            .offset(x: 140, y: -100)
+                                            }
+                                    }
+                            case 5:
+                                Text("Explanation: \(questions[currentQuestionIndex].explanation)")
+                                    .padding(25)
+                                    .padding(.top, -15)
+                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                ZStack {
+                                    Image("cooling")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 300)
+                                        .padding(.bottom, 20)
+                                    Link(destination: URL(string: "https://oecd.ai/en/wonk/how-much-water-does-ai-consume")!) {
+                                        Text("?")
+                                            .font(.title)
+                                            .foregroundColor(.white)
+                                            .frame(width: 40, height: 40)
+                                            .background(Circle().fill(Color.blue))
+                                            .offset(x: 130, y: -90)
+                                            }
+                                    }
+    
                             default:
                                 Text("Explanation: \(questions[currentQuestionIndex].explanation)")
                                     .padding(25)
@@ -559,40 +658,47 @@ struct QuizView: View {
     }
 }
     
-    struct EndingScreen: View {
-        @Environment(\.presentationMode) var presentationMode
-        let score: Int
-        let totalQuestions: Int
-        
-        var body: some View {
+struct EndingScreen: View {
+    @Environment(\.presentationMode) var presentationMode
+    let score: Int
+    let totalQuestions: Int
+    
+    var body: some View {
+        ZStack {
+            Color(red: 174 / 255, green: 158 / 255, blue: 34 / 255)  .ignoresSafeArea()
             VStack {
-                Text("Quiz Completed!")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                Image("completed")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 350)
                     .padding()
                 Text("You earned \(score) knowledge points!")
-                    .font(.title)
-                    .padding()
-                Text("Now that you know how AI affects our world, it’s up to you to make smarter, greener choices.")
-                    .font(.body)
-                    .multilineTextAlignment(.center)
+                    .font(.largeTitle)
                     .padding()
                 ShareLink(item: URL(string: "https://developer.apple.com/xcode/swiftui/")!) {
                     Label("Share your results", systemImage: "square.and.arrow.up")
+                        .padding()
                 }
-                .padding()
+                Spacer() 
                 
-                Button("Back to Home") {
+                Button(action: {
                     presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text("BACK TO HOME")
+                        .font(.system(size: 20, weight: .bold))
                 }
-                .padding()
-                .background(Color.green)
-                .foregroundColor(.white)
-                .cornerRadius(10)
+                .buttonStyle(.borderedProminent)
+                .cornerRadius(15)
+                .foregroundColor(Color(UIColor(red: 0xFC / 255.0, green: 0xFA / 255.0, blue: 0xE2 / 255.0, alpha: 1.0)))
+                .tint(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
+                .padding(.top, -50)
             }
             .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .navigationBarHidden(true)
     }
+}
                  
 
 #Preview {

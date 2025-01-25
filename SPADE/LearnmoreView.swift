@@ -17,8 +17,9 @@ struct LearnmoreView: View {
                     .imageScale(.large)
                     .foregroundStyle(.tint)
                     .padding()
-                Text("Created by Gabrielle Gervacio, sources here")
-                    .font(.custom("Avenir Next Rounded", size: 17))
+                Text("SOURCES")
+                    .font(.title2)
+                Text("Created by Gabrielle Gervacio")
             }
             .scrollContentBackground(.hidden)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
