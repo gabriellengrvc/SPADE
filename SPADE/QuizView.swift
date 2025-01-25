@@ -27,6 +27,7 @@ enum QuestionType {
     case multipleChoice2
     case stepper
     case slider
+    case slider2
     case stepper2
     case stepper4
 }
@@ -341,7 +342,7 @@ struct StepperView4: View {
 }
     
 struct SliderView: View {
-    @State private var sliderValue: Double = 1000
+    @State private var sliderValue: Double = 0
     let correctAnswer: Float
     let explanation: String
     @Binding var isAnswered: Bool
@@ -421,6 +422,75 @@ struct SliderView: View {
         }
     }
 }
+
+struct SliderView2: View {
+    @State private var sliderValue: Double = 0
+    let correctAnswer: Float
+    let explanation: String
+    @Binding var isAnswered: Bool
+    @Binding var score: Int
+    @State var color: Color = .green
+    @State private var feedback: String = ""
+    
+    let correctColor = Color(UIColor(red: 0x81 / 255.0, green: 0x9F / 255.0, blue: 0x25 / 255.0, alpha: 1.0))
+    let incorrectColor = Color(UIColor(red: 0xBA / 255.0, green: 0x43 / 255.0, blue: 0x53 / 255.0, alpha: 1.0))
+    
+    var body: some View {
+        VStack {
+            Text("\(Int(sliderValue)) tons of CO2")
+                .font(.largeTitle)
+                .foregroundColor(correctColor)
+                .font(.system(.title, design: .rounded))
+            Slider(
+                value: $sliderValue,
+                in: 0...500,
+                step:1.0,
+                onEditingChanged: { isEditing in
+                    color = isEditing ? .gray : correctColor
+                    feedback = ""
+                }
+            )
+            .padding()
+            
+            HStack {
+                Text("0")
+                    .font(.title3)
+                    .foregroundColor(.gray)
+                    .font(.system(.title, design: .rounded))
+                    .bold()
+            
+                Spacer()
+                Text("500")
+                    .font(.title3)
+                    .foregroundColor(.gray)
+                    .font(.system(.title, design: .rounded))
+                    .bold()
+            }
+            .padding()
+            
+            if isAnswered {
+                Text(abs(sliderValue - Double(correctAnswer)) < 10 ? "Correct!" : "Incorrect.")
+                    .foregroundColor(abs(sliderValue - Double(correctAnswer)) < 10 ? correctColor : incorrectColor)
+                    .padding()
+            } else {
+                Button("Submit") {
+                    isAnswered = true
+                    if abs(sliderValue - Double(correctAnswer)) < 10 {
+                        score += 5
+                    }
+                }
+                .padding()
+            }
+            
+            if !feedback.isEmpty {
+                Text(feedback)
+                    .font(.subheadline)
+                    .foregroundColor(.blue)
+                    .padding()
+            }
+        }
+    }
+}
     
 struct QuizView: View {
     @State private var currentQuestionIndex = 0
@@ -452,7 +522,7 @@ struct QuizView: View {
             questionText: "Behind AI is an important piece of hardware, a GPU, which is a...",
             options: ["specialized electronic circuit that does complex computations", "processing unit that acts as a control center", "short-term memory that holds data"],
             correctAnswer: .single("specialized electronic circuit that does complex computations"),
-            explanation: "A GPU, short for graphic processing unit, performs multiple calculations at the same time. It excels at handling data-intensive and computationally demanding tasks. Large AI models can involve thousands of GPUs running continuously." ,
+            explanation: "GPUs, short for graphic processing unit, excel at handling data-intensive tasks. These require 10–15 times the energy a traditional CPU. Large AI models can involve thousands of GPUs running continuously." ,
             type: .multipleChoice),
         Question(
             questionText: "How many GPUs do you think were used to build GPT-4, currently the most advanced and accurate OpenAI system?",
@@ -461,16 +531,28 @@ struct QuizView: View {
             explanation: "It took 16000 GPUs amounting to 1 billion dollars to build GPT-4. Training GPT-4 tooks GPUs running for months and consumed 50 GWh, the equivalent to the annual electricity usage of 3600 homes.",
             type: .stepper2),
         Question(
+            questionText: "Researchers have argued that training a single large language deep learning model is estimated to use around...",
+            options: [],
+            correctAnswer: .single("300"),
+            explanation: "Large language deep learning models such as OpenAI’s GPT-4 or Google’s PaLM is estimated to use around 300 tons of CO2 — for comparison, the average person is responsible for creating around 5 tons of CO2 a year.",
+            type: .slider2),
+        Question(
             questionText: "AI servers can get hot and require cooling systems to regulate temperature. How many mL of water do you think 1 ChatGPT conversation uses? ",
             options: [],
             correctAnswer: .single("500"),
             explanation: "ChatGPT gulps up around 500 mL of water every time you ask it between 5-50 questions! AI consumes fresh water by onsite server cooling and offsite electricity generation.",
             type: .stepper4),
         Question(
-            questionText: "Big companies have made pledges to sustainability in AI. Google aims to solely rely on carbon-free energy by 2030. Microsoft plans to be carbon-negative by 2030 and then remove historical emissions by 2050. How can we make AI systems greener?",
-            options: ["renewable energy", "carbon capture", "better climate policies", "circular economy" ],
-            correctAnswer: .multiple(["renewable energy", "carbon capture", "better climate policies", "circular economy" ]),
-            explanation: "all of the above!",
+            questionText: "Is AI bad for the environment?",
+            options: ["Yes", "No"],
+            correctAnswer: .single("No"),
+            explanation: "Although AI has environmental complications, it also has the power to contribute to the fight against climate change, whether it be mapping deforestation, improving satellite imagery, predicting weather patterns, recycling waste, and more.",
+            type: .multipleChoice),
+        Question(
+            questionText: "How can we make AI systems greener?",
+            options: ["Renewable energy", "Effective AI models", "Better climate policies", "Circular economy"],
+            correctAnswer: .multiple(["Renewable energy", "Effective AI models", "Better climate policies", "Circular economy"]),
+            explanation: "All of the above!",
             type: .multipleChoice2),
     ]
     
@@ -532,6 +614,10 @@ struct QuizView: View {
                             SliderView(correctAnswer: 1500, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
                                 .opacity(revealOptions ? 1 : 0)
                                 .animation(.easeInOut(duration: 2), value: revealOptions)
+                        case .slider2:
+                            SliderView2(correctAnswer: 300, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
+                                .opacity(revealOptions ? 1 : 0)
+                                .animation(.easeInOut(duration: 2), value: revealOptions)
                             
                         case .stepper2:
                             StepperView2(correctAnswer: 16000, explanation: question.explanation, isAnswered: $isAnswered, score: $score)
@@ -550,7 +636,7 @@ struct QuizView: View {
                                 Text("Explanation: \(questions[currentQuestionIndex].explanation)")
                                     .padding(25)
                                     .padding(.top, -15)
-                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                    .font(.custom("Poppins-Regular", size: 17))
                                 Image("table")
                                     .resizable()
                                     .frame(width: 420, height:240)
@@ -559,7 +645,7 @@ struct QuizView: View {
                                 Text("Explanation: \(questions[currentQuestionIndex].explanation)")
                                     .padding(25)
                                     .padding(.top, -15)
-                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                    .font(.custom("Poppins-Regular", size: 17))
                                 ZStack {
                                     Image("datagraph")
                                         .resizable()
@@ -580,7 +666,7 @@ struct QuizView: View {
                                 Text("Explanation: \(questions[currentQuestionIndex].explanation)")
                                     .padding(25)
                                     .padding(.top, -15)
-                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                    .font(.custom("Poppins-Regular", size: 17))
                                 ZStack {
                                     Image("gpus")
                                         .resizable()
@@ -597,11 +683,11 @@ struct QuizView: View {
                                             .offset(x: 140, y: -100)
                                             }
                                     }
-                            case 5:
+                            case 6:
                                 Text("Explanation: \(questions[currentQuestionIndex].explanation)")
                                     .padding(25)
                                     .padding(.top, -15)
-                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                    .font(.custom("Poppins-Regular", size: 17))
                                 ZStack {
                                     Image("cooling")
                                         .resizable()
@@ -617,11 +703,31 @@ struct QuizView: View {
                                             .offset(x: 130, y: -90)
                                             }
                                     }
+                            case 7:
+                                Text("Explanation: \(questions[currentQuestionIndex].explanation)")
+                                    .padding(25)
+                                    .padding(.top, -15)
+                                    .font(.custom("Poppins-Regular", size: 17))
+                                ZStack {
+                                    Image("climatechange")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 350)
+                                        .padding(.bottom, 20)
+                                    Link(destination: URL(string: "https://www.weforum.org/stories/2024/02/ai-combat-climate-change/")!) {
+                                        Text("?")
+                                            .font(.title)
+                                            .foregroundColor(.white)
+                                            .frame(width: 40, height: 40)
+                                            .background(Circle().fill(Color.blue))
+                                            .offset(x: 150, y: -90)
+                                            }
+                                    }
     
                             default:
                                 Text("Explanation: \(questions[currentQuestionIndex].explanation)")
                                     .padding(25)
-                                    .font(.custom("Avenir Next Rounded", size: 17))
+                                    .font(.custom("Poppins-Regular", size: 17))
                             }
                             
                             Button("Next Question") {
@@ -647,6 +753,7 @@ struct QuizView: View {
                         }
                     } else {
                         EndingScreen(score: score,totalQuestions: questions.count)
+                            .ignoresSafeArea()
                     }
                 }
                 .padding([.leading, .trailing], 0)
@@ -664,39 +771,38 @@ struct EndingScreen: View {
     let totalQuestions: Int
     
     var body: some View {
-        ZStack {
-            Color(red: 174 / 255, green: 158 / 255, blue: 34 / 255)  .ignoresSafeArea()
-            VStack {
-                Image("completed")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 350)
+        VStack {
+            Spacer()
+            Image("completed")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 350)
+                .padding(.bottom, 20)
+            Text("You earned \(score) knowledge points!")
+                .font(.custom("Poppins-Regular", size: 20))
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 20)
+            ShareLink(item: URL(string: "https://developer.apple.com/xcode/swiftui/")!) {
+                Label("Share your results", systemImage: "square.and.arrow.up")
                     .padding()
-                Text("You earned \(score) knowledge points!")
-                    .font(.largeTitle)
-                    .padding()
-                ShareLink(item: URL(string: "https://developer.apple.com/xcode/swiftui/")!) {
-                    Label("Share your results", systemImage: "square.and.arrow.up")
-                        .padding()
-                }
-                Spacer() 
-                
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Text("BACK TO HOME")
-                        .font(.system(size: 20, weight: .bold))
-                }
-                .buttonStyle(.borderedProminent)
-                .cornerRadius(15)
-                .foregroundColor(Color(UIColor(red: 0xFC / 255.0, green: 0xFA / 255.0, blue: 0xE2 / 255.0, alpha: 1.0)))
-                .tint(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
-                .padding(.top, -50)
+                    .background(Color.white.opacity(0.2))
+                    .cornerRadius(10)
             }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.bottom, 20)
+            
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Text("BACK TO HOME")
+                    .font(.system(size: 20, weight: .bold))
+            }
+            .buttonStyle(.borderedProminent)
+            .cornerRadius(15)
+            .foregroundColor(Color(UIColor(red: 0xFC / 255.0, green: 0xFA / 255.0, blue: 0xE2 / 255.0, alpha: 1.0)))
+            .tint(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
+            Spacer()
         }
-        .navigationBarHidden(true)
+        .padding()
     }
 }
                  
