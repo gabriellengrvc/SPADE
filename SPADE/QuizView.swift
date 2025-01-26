@@ -689,9 +689,6 @@ struct QuizView: View {
                                     .padding(.top, -15)
                                     .font(.custom("Poppins-Regular", size: 17))
                                 ZStack {
-                                    Text("Track your digital carbon footprint")
-                                        .font(.title3)
-                                        .bold()
                                     Image("codecarbon")
                                         .resizable()
                                         .scaledToFit()
