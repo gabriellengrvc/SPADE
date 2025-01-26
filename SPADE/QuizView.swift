@@ -550,8 +550,8 @@ struct QuizView: View {
             type: .multipleChoice),
         Question(
             questionText: "How can we make AI systems greener?",
-            options: ["Renewable energy", "Effective AI models", "Better climate policies", "Circular economy"],
-            correctAnswer: .multiple(["Renewable energy", "Effective AI models", "Better climate policies", "Circular economy"]),
+            options: ["Using renewable energy", "Enhancing energy efficiency for AI models", "Better climate policies", "Circular economy"],
+            correctAnswer: .multiple(["Renewable energy", "Effective AI models", "Better climate policies", "Circular economy, reusing and recycling equipment"]),
             explanation: "All of the above!",
             type: .multipleChoice2),
     ]
@@ -681,6 +681,29 @@ struct QuizView: View {
                                             .frame(width: 40, height: 40)
                                             .background(Circle().fill(Color.blue))
                                             .offset(x: 140, y: -100)
+                                            }
+                                    }
+                            case 5:
+                                Text("Explanation: \(questions[currentQuestionIndex].explanation)")
+                                    .padding(25)
+                                    .padding(.top, -15)
+                                    .font(.custom("Poppins-Regular", size: 17))
+                                ZStack {
+                                    Text("Track your digital carbon footprint")
+                                        .font(.title3)
+                                        .bold()
+                                    Image("codecarbon")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 300)
+                                        .padding(.bottom, 20)
+                                    Link(destination: URL(string: "https://codecarbon.io")!) {
+                                        Text("?")
+                                            .font(.title)
+                                            .foregroundColor(.white)
+                                            .frame(width: 40, height: 40)
+                                            .background(Circle().fill(Color.blue))
+                                            .offset(x: 130, y: -90)
                                             }
                                     }
                             case 6:

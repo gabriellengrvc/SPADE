@@ -6,101 +6,54 @@
 //
 
 import SwiftUI
-import WebKit
 
 struct OnboardingView: View {
-    @Binding var hasSeenOnboarding: Bool
     @State private var showContentView = false
     
     var body: some View {
         VStack {
             if showContentView {
                 ContentView()
+                    .transition(.slide)
             } else {
                 WelcomeView(isWelcomeSheetShowing: .constant(true))
                 Button {
                     withAnimation {
                         showContentView = true
-                        hasSeenOnboarding = true
-                        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
                     }
                 } label: {
-                    Text("Continue")
+                    Text("CONTINUE")
                         .font(.title3)
                         .fontWeight(.semibold)
                         .foregroundColor(Color.white)
                         .frame(minWidth:0, maxWidth: .infinity)
                         .padding()
-                        .background(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
+                        .background(Color(UIColor(red: 174/255, green: 158/255, blue: 34/255, alpha: 1.0)))
+                        .cornerRadius(20)
                         .padding(.horizontal, 16)
-                        .overlay(RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.black, lineWidth: 1))
-                        .cornerRadius(20)
-                        .background(Color(UIColor(red: 0x4E / 255.0, green: 0x64 / 255.0, blue: 0x30 / 255.0, alpha: 1.0)))
-                        .cornerRadius(20)
                 }
                 .padding()
-                if showContentView {
-                    ContentView()
-                        .transition(.slide)
-                }
             }
         }
-        .onAppear {
-            if hasSeenOnboarding {
-               showContentView = true
-            }
-        }
+        .background(Color(red: 1.0, green: 0.984, blue: 0.953).ignoresSafeArea())
     }
-}
-#Preview {
-    OnboardingView(hasSeenOnboarding: .constant(false))
 }
 
 struct PageInfo: Identifiable {
     let id = UUID()
     let label: String
-    let text: String
-    let gifName: String
-}
-
-struct GifImage: UIViewRepresentable {
-    private let name: String
-
-    init(_ name: String) {
-        self.name = name
-    }
-
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
-        let url = Bundle.main.url(forResource: name, withExtension: "gif")!
-        let data = try! Data(contentsOf: url)
-        webView.load(
-            data,
-            mimeType: "image/gif",
-            characterEncodingName: "UTF-8",
-            baseURL: url.deletingLastPathComponent()
-        )
-        webView.scrollView.isScrollEnabled = false
-        webView.configuration.mediaTypesRequiringUserActionForPlayback = []
-
-        return webView
-    }
-
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        uiView.reload()
-    }
-
+    let image: String
 }
 
 let pages = [
-    PageInfo(label: "", text: "AI is experiencing explosive growth", gifName: "increase"),
-    PageInfo(label: "", text: "And shows no sign of slowing down", gifName: "battery"),
-    PageInfo(label: "", text: "With data transparency and education, we can learn how it impacts our world", gifName: "earth"),
+    PageInfo(label: "", image: "tab1"),
+    PageInfo(label: "", image: "tab2"),
+    PageInfo(label: "", image: "tab3"),
 ]
 
 struct WelcomeView: View{
     @Binding var isWelcomeSheetShowing: Bool
+    @State private var isAnimating = false
     
     var body: some View {
         VStack {
@@ -111,24 +64,39 @@ struct WelcomeView: View{
                             .font(.largeTitle)
                             .fontWeight(.bold)
                             .multilineTextAlignment(.center)
-                        
-                        Text(page.text)
-                            .fontWeight(.medium)
-                            .padding()
-                        
-                        GifImage(page.gifName)
-                            .frame(height: 200)
-                            .padding()
+                        Image(page.image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 500, height: 300)
+                            .padding(.top, -20)
+                            .scaleEffect(isAnimating ? 1 : 2)
+                            .opacity(isAnimating ? 1 : 0)
+                            .onAppear {
+                                isAnimating = false
+                                withAnimation(.easeOut(duration: 0.5)) {
+                                    isAnimating = true
+                                }
+                            }
                     }
                 }
+            }
+            .tabViewStyle(PageTabViewStyle())
+            .onAppear {
+                UIPageControl.appearance().currentPageIndicatorTintColor = .label
+                UIPageControl.appearance().pageIndicatorTintColor = .systemGray
             }
         }
         .interactiveDismissDisabled()
         .tabViewStyle(.page)
-        .onAppear {
-            UIPageControl.appearance().currentPageIndicatorTintColor = .label
-            UIPageControl.appearance().pageIndicatorTintColor = .systemGray
+        .scrollContentBackground(.hidden)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            Color(red: 1.0, green: 0.984, blue: 0.953)
+                .ignoresSafeArea()
         }
     }
 }
 
+#Preview {
+    OnboardingView()
+}

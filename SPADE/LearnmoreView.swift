@@ -18,6 +18,7 @@ struct LearnmoreView: View {
     var sources2: [(name: String, url: String)] = [
         ("GPUs for AI, Google Cloud", "https://cloud.google.com/discover/gpu-for-ai"),
         ("Can Language Models Be Too Big?", "https://dl.acm.org/doi/10.1145/3442188.3445922"),
+        ("Tackling AI’s Climate Change Problem, MITSloan", "https://sloanreview.mit.edu/article/tackling-ais-climate-change-problem/"),
         ("Data Centers and AI, Mckinsey & Company", "https://www.mckinsey.com/industries/private-capital/our-insights/how-data-centers-and-the-energy-sector-can-sate-ais-hunger-for-power"),
         ("Generative AI, Deloitte Insights", "https://www2.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions/2025/genai-power-consumption-creates-need-for-more-sustainable-data-centers.html"),
         ("AI’s true carbon footprint, MIT Technology Review", "https://www.technologyreview.com/2022/11/14/1063192/were-getting-a-better-idea-of-ais-true-carbon-footprint/"),
@@ -87,10 +88,7 @@ struct LearnmoreView: View {
             }
             .scrollContentBackground(.hidden)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background {
-                    Color(red: 1.0, green: 0.984, blue: 0.953)
-                        .ignoresSafeArea()
-                    }
+            .background {Color(red: 1.0, green: 0.984, blue: 0.953).ignoresSafeArea()}
         }
     }
 }
